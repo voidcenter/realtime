@@ -6,80 +6,26 @@ import { useEffect } from 'react';
 import { ethers, utils } from "ethers";
 
 
-// var wsProvider = new ethers.providers.WebSocketProvider("wss://rinkeby.infura.io/ws/v3/idhere", "rinkeby");
-
-
 export default function Home() {
 
-    const ethers = require("ethers");
     console.log(ethers);
     console.log(window);
 
-    // const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const provider = new ethers.providers.AlchemyProvider('matic', 'Ce4JsDJknM1Vi6LcVGBMebL21qNiVYkK');
+    // this the metamask net
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     console.log(provider);
 
     const filter = {
         topics: [
-            // the name of the event, parnetheses containing the data type of each event, no spaces
-            // utils.id("Transfer(address,address,uint256)"),
-            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
-            // null
+            utils.id("Transfer(address,address,uint256)"),
         ]
     };
 
     provider.on(filter, async (e: any) => {
-        // do whatever you want here
-        // I'm pretty sure this returns a promise, so don't forget to resolve it
         console.log(e);
     });
 
-  
-    // window.ethereum.on('message', (e) => {
-    //   console.log(e);
-    // })
-
-
-    // provider.on('*', async (data) => {
-    //   console.log('*', data)
-    // });
-
-    provider.on('block', async (data) => {
-      console.log('block', data);
-    });
-
-
-    const url = 'wss://polygon-mainnet.g.alchemy.com/v2/Ce4JsDJknM1Vi6LcVGBMebL21qNiVYkK';
-    const httpurl = 'https://polygon-mainnet.g.alchemy.com/v2/Ce4JsDJknM1Vi6LcVGBMebL21qNiVYkK';
-    const hhprovider = new ethers.providers.JsonRpcProvider(httpurl);
-
-    const filterx = {
-      topics: [ 
-          '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
-      ]
-    }
-
-    // hhprovider.on(filterx, (log, event) => {
-    //   console.log('event coming in: ', log, event);
-    // })
-
-    // hhprovider.on('*', (log, event) => {
-    //   console.log('event coming in: ', log, event);
-    // })
-
-    // hhprovider.on('block', (log, event) => {
-    //   console.log('event coming in: ', log, event);
-    // })
-
-
-
-
-
-    useEffect(() => {
-        // Client-side-only code
-      
-
-    })
+    
 
 
   return (
