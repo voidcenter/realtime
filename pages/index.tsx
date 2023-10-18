@@ -1,6 +1,31 @@
 import Image from 'next/image'
+import { useEffect } from 'react';
+
+import { ethers, utils } from "ethers";
+
 
 export default function Home() {
+
+    console.log(ethers);
+    console.log(window);
+
+    // this the metamask net
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+    console.log(provider);
+
+    const filter = {
+        topics: [
+            utils.id("Transfer(address,address,uint256)"),
+        ]
+    };
+
+    provider.on(filter, async (e: any) => {
+        console.log(e);
+    });
+
+
+
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
