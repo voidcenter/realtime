@@ -5,6 +5,7 @@ import { setPixiApp, setupResizeHandler } from "./system";
 import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
 import * as moment from 'moment-timezone';
 import { ContextChange } from "@/context/defs";
+import { drawNodes, getForcedLayout } from "./helpers";
 
 
 // ---------------------------
@@ -65,6 +66,10 @@ const RealtimeView = ({  }) => {
 
 
             // get force layout
+
+            getForcedLayout(vc);
+            drawNodes(vc);
+
             // start ticker 
         }
 
@@ -87,15 +92,4 @@ const RealtimeView = ({  }) => {
 
 
 export default RealtimeView;
-
-
-
-// lastAnimating StartTime
-// max Aimating Seconds
-// min Animating Second 
-// 如果很多，就min
-// 如果很少，就max
-// set then start
-// 自己定tick，还是app有tick
-// 
 

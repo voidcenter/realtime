@@ -29,6 +29,33 @@ export function parseTransfer(event: RawEvent): TempTransfer {
     };
 }
 
+
+interface Weights {
+    nodeWeights: number[];
+    linkWeights: number[];
+    tokenWeights: number[];
+}
+
+
+// TODO: update this using price and balance 
+// This is the function to change to adjust 
+//   -- how entities are sized differently
+//   -- how to determine which entities to show and which to hide
+// function getEntityWeights(block: ParsedBlock): Weights {
+   
+//     // naive algorithm: nodes by degree, transfer by amount, no weight for tokens
+    
+//     // ideally: USD balance for ndoe, USD amount for transfer, Marketcap for token
+
+    
+    
+
+    
+
+// }
+
+
+
 export function parseBlockTransfers(block: RawBlock): ParsedBlock {
     
     const transfers = block.events

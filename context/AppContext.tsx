@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer } from 'react';
 import { demoData } from './damo-data';
-import { Context, ContextChange, ContextDelta } from './defs';
+import { Context, ContextChange, ContextDelta, FORCE_MAX_BUFFER_BLOCKS, MAX_BUFFER_BLOCKS } from './defs';
 import { parseBlockTransfers } from './helpers';
 
 
@@ -74,6 +74,13 @@ function popFirstBlock(context: Context): Context {
     // note, this won't create a new array and therefore react would think there is no change, 
     // in turn, re-render won't happen which is the desired behavior 
     context.blocks.shift();
+
+    if (FORCE_MAX_BUFFER_BLOCKS) {
+        while (context.blocks.length > MAX_BUFFER_BLOCKS) {
+            context.blocks.shift();
+        }
+    }
+
     return context; 
 }
 

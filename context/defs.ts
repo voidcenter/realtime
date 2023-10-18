@@ -1,4 +1,10 @@
 
+
+export const FORCE_MAX_BUFFER_BLOCKS = true;
+export const MAX_BUFFER_BLOCKS = 10;
+
+
+
 export interface RawEvent {
     address: string;
     blockHash: string;
@@ -26,7 +32,7 @@ export interface Link {
     txn_hash: string;
 }
 
-export interface ParsedBlock {
+export interface ParsedBlock {  
     block_number: number;
     addresses: string[];
     tokens: string[];
