@@ -3,18 +3,26 @@ import { useEffect } from 'react';
 import dynamic from "next/dynamic";
 
 import { ethers, utils } from "ethers";
+import { ContextChange, Event, useAppContext, useAppDispatch } from '@/context/AppContext';
 const RealtimeView = dynamic(() => import("../components/RealtimeView"), { ssr: false });
+
+
 
 
 
 export default function Home() {
 
-    console.log(ethers);
-    console.log(window);
+    const context = useAppContext();
+    const dispatch = useAppDispatch();
+
+
+    // console.log(ethers);
+    // console.log(window);
 
     // this the metamask net
     const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-    console.log(provider);
+    // const provider = new ethers.providers.AlchemyProvider('matic', 'Ce4JsDJknM1Vi6LcVGBMebL21qNiVYkK');
+    // console.log(provider);
 
     const filter = {
         topics: [
@@ -22,8 +30,28 @@ export default function Home() {
         ]
     };
 
-    provider.on(filter, async (e: any) => {
-        console.log(e);
+    let currentBlock = -1;
+    let eventsBuffer: Event[] = [];
+
+    provider.on(filter, async (e: Event) => {
+
+        if (e.blockNumber > currentBlock) {
+            if (currentBlock > 0) {
+                console.log('flush logs', currentBlock);
+                // flush to context
+                const newBlock = {
+                    blockNumber: currentBlock,
+                    events: eventsBuffer,
+                };
+
+                // console.log(JSON.stringify(newContext));
+                await dispatch({type: ContextChange.APPEND_BLOCK, newBlock });
+            }
+            eventsBuffer = [];
+            currentBlock = e.blockNumber;
+        }
+        eventsBuffer.push(e);
+        // console.log(e);
     });
 
 

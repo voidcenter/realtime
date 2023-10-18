@@ -1,51 +1,25 @@
 import React, { useEffect, useRef } from "react";
-import { settings, SCALE_MODES, Application, Graphics, Container } from "pixi.js";
-
-
-const VIEW_ASPECT_RATIO = 9 / 16;
-
-
-function setPixiApp(parentRef): { app }  {
-
-    const app = new Application({
-        width: 10,
-        height: 10,
-        backgroundAlpha: 0,
-        antialias: true,
-        autoDensity: true,
-    });
-    
-    console.log('test');
-    
-    globalThis.__PIXI_APP__ = app;
-    
-    // On first render add app to DOM
-    app.renderer.resize(window.innerWidth, window.innerWidth * VIEW_ASPECT_RATIO);
-    parentRef.current.replaceChildren(app.view);
-    
-    return { app };
-}
-
-
-const setupResizeHandler = (vc) => {
-    function handleResize() {
-        vc.app.renderer.resize(window.innerWidth, window.innerWidth * VIEW_ASPECT_RATIO);
-    }
-    window.addEventListener('resize', handleResize)
-    return () => {
-        window.removeEventListener('resize', handleResize)
-    }
-}
+import { ContextChange, useAppContext, useAppDispatch } from "@/context/AppContext";
+import { useChange } from "./useChange";
+import { setPixiApp, setupResizeHandler } from "./system";
+import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
+import * as moment from 'moment-timezone';
 
 
 // ---------------------------
 const RealtimeView = ({  }) => {
 
-    // const context = useAppContext();
-    // const dispatch = useAppDispatch();
+    const context = useAppContext();
+    const dispatch = useAppDispatch();
 
-    const vcRef = useRef({});
- 
+    // console.log('context', context);
+
+
+    const vcRef = useRef({} as ViewContext);
+    const vc = vcRef.current; 
+    vc.context = context;
+
+    
     useEffect(() => {
         return setupResizeHandler(vcRef.current);
     });
@@ -62,9 +36,71 @@ const RealtimeView = ({  }) => {
         };
     }, []);
 
+
+    useChange(context, (prev, current) => {
+        // console.log('context updated', current);
+    });
+
+
+    const mainLoop = (vc: ViewContext) => {
+
+        // console.log('tick', vc, vc.context);
+
+        // if the screen is empty and there are new blocks
+        const now = moment().unix();
+        const thisContext = vc.context;
+        if ((!vc.startTs ||  now > vc.startTs + vc.duration) && thisContext.blocks.length > 0) {
+            // new animation 
+            vc.startTs = now;
+            vc.duration = MAX_ANIMATION_DURATION;            
+            vc.block = thisContext.blocks[0];  // remove first 
+
+
+            // async update context 
+            const newContext = { 
+                blockEvents: [ 
+                    ... thisContext.blocks 
+                ] 
+            };
+            // dispatch({type: ContextChange.SET_DATA, newContext });
+
+            console.log('animate', vc.block.blockNumber, vc.block, thisContext);
+
+            // console.log(JSON.stringify(thisContext));
+
+
+            // get force layout
+            // start ticker 
+        }
+
+    }
+
+
+    useEffect(() => {
+        // Set up an interval to update the ticker value every second
+        const interval = setInterval(() => {
+            mainLoop(vcRef.current);
+        }, 1000 / 30);
+    
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
+
+
     return <div ref={ref} />;
 };
 
 
 export default RealtimeView;
+
+
+
+// lastAnimating StartTime
+// max Aimating Seconds
+// min Animating Second 
+// 如果很多，就min
+// 如果很少，就max
+// set then start
+// 自己定tick，还是app有tick
+// 
 
