@@ -3,7 +3,9 @@ import { useEffect } from 'react';
 import dynamic from "next/dynamic";
 
 import { ethers, utils } from "ethers";
-import { ContextChange, Event, useAppContext, useAppDispatch } from '@/context/AppContext';
+import { useAppContext, useAppDispatch } from '@/context/AppContext';
+import { TRANSFER_TOPIC } from '@/context/helpers';
+import { ContextChange, RawBlock, RawEvent } from '@/context/defs';
 const RealtimeView = dynamic(() => import("../components/RealtimeView"), { ssr: false });
 
 
@@ -26,21 +28,21 @@ export default function Home() {
 
     const filter = {
         topics: [
-            utils.id("Transfer(address,address,uint256)"),
+            TRANSFER_TOPIC
         ]
     };
 
     let currentBlock = -1;
-    let eventsBuffer: Event[] = [];
+    let eventsBuffer: RawEvent[] = [];
 
-    provider.on(filter, async (e: Event) => {
+    provider.on(filter, async (e: RawEvent) => {
 
         if (e.blockNumber > currentBlock) {
             if (currentBlock > 0) {
                 console.log('flush logs', currentBlock);
                 // flush to context
-                const newBlock = {
-                    blockNumber: currentBlock,
+                const newBlock: RawBlock = {
+                    block_number: currentBlock,
                     events: eventsBuffer,
                 };
 

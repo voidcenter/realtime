@@ -1,40 +1,8 @@
 import { createContext, useContext, useReducer } from 'react';
 import { demoData } from './damo-data';
+import { Context, ContextChange, ContextDelta } from './defs';
+import { parseBlockTransfers } from './helpers';
 
-// Use this to invalidate earlier versions of localStorages
-export const CONTEXT_VERSION = 6;
-
-
-export interface Event {
-    address: string;
-    blockHash: string;
-    blockNumber: number;
-    data: string;
-    logIndex: number;
-    removed: boolean;
-    topics: string[];
-    transactionHash: string;
-    transactionIndex: number;
-}
-
-export interface BlockEvents {
-    blockNumber: number;
-    events: Event[];
-}
-
-export interface Context {
-    blocks: BlockEvents[];
-}
-
-export enum ContextChange {
-    APPEND_BLOCK = "Append Block",
-    POP_FIRST_BLOCK = "Pop first",
-}
-
-export interface ContextDelta {
-    type: ContextChange;
-    newBlock: BlockEvents;
-}
 
 const AppContext = createContext(null);
 const AppDispatchContext = createContext(null);
@@ -82,16 +50,16 @@ function appendBlock(context: Context, action: ContextDelta): Context {
     console.log('[Context] append block', action.newBlock);
 
     const lastBlock = context.blocks.length > 0 ? 
-        context.blocks[context.blocks.length - 1].blockNumber : 
+        context.blocks[context.blocks.length - 1].block_number : 
         -1;
-    if (action.newBlock.blockNumber <= lastBlock) {
+    if (action.newBlock.block_number <= lastBlock) {
         console.log('duplicated block Number! last block = ', lastBlock, 'new block = ', action.newBlock);
         return context;
     }
 
     context.blocks = [
         ...context.blocks,
-        action.newBlock,
+        parseBlockTransfers(action.newBlock),
     ];
     return context;
 }
@@ -122,6 +90,6 @@ function _contextReducer(context: Context, action: ContextDelta) {
 }
   
 const initialContext = {
-    blockEvents: [],
+    blocks: [],
 };
 

@@ -1,5 +1,5 @@
 
-import { BlockEvents, Context } from "@/context/AppContext";
+import { ParsedBlock, Context } from "@/context/defs";
 import { Application } from "pixi.js";
 
 
@@ -21,7 +21,7 @@ export interface ViewContext {
     startTs?: number;
     duration?: number; 
 
-    block?: BlockEvents;
+    block?: ParsedBlock;
     context?: Context;
 
 }

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { ContextChange, useAppContext, useAppDispatch } from "@/context/AppContext";
+import { useAppContext, useAppDispatch } from "@/context/AppContext";
 import { useChange } from "./useChange";
 import { setPixiApp, setupResizeHandler } from "./system";
 import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
 import * as moment from 'moment-timezone';
+import { ContextChange } from "@/context/defs";
 
 
 // ---------------------------
@@ -56,15 +57,9 @@ const RealtimeView = ({  }) => {
             vc.block = thisContext.blocks[0];  // remove first 
 
 
-            // async update context 
-            const newContext = { 
-                blockEvents: [ 
-                    ... thisContext.blocks 
-                ] 
-            };
-            // dispatch({type: ContextChange.SET_DATA, newContext });
+            dispatch({type: ContextChange.POP_FIRST_BLOCK });
 
-            console.log('animate', vc.block.blockNumber, vc.block, thisContext);
+            console.log('animate', vc.block.block_number, vc.block, thisContext);
 
             // console.log(JSON.stringify(thisContext));
 

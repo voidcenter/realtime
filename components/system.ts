@@ -1,5 +1,3 @@
-
-
 import { Application } from "pixi.js";
 import { VIEW_ASPECT_RATIO, ViewContext } from "./defs";
 
