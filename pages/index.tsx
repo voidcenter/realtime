@@ -1,5 +1,3 @@
-"use client"
-
 import Image from 'next/image'
 import { useEffect } from 'react';
 
@@ -12,7 +10,7 @@ export default function Home() {
     console.log(window);
 
     // this the metamask net
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
     console.log(provider);
 
     const filter = {
@@ -25,7 +23,7 @@ export default function Home() {
         console.log(e);
     });
 
-    
+
 
 
   return (
