@@ -5,6 +5,7 @@ import { Application } from "pixi.js";
 
 
 export const VIEW_ASPECT_RATIO = 9 / 16;
+export const SCREEN_NODE_SIZE = 12;
 
 // in seoncds
 // if there are too few blocks, leave the view empty, in a waiting animation 
@@ -16,6 +17,7 @@ export const MIN_ANIMATION_DURATION = 2;
 export interface ViewGraph {
     nodes: any;
     links: any;
+    selectedNode?: any;
 }
 
 
@@ -32,6 +34,7 @@ export interface ViewContext {
     vg: ViewGraph;
 
     timeAlpha: number;
+    addressUrlPrefix?: string;
 
 }
 
