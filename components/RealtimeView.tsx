@@ -9,7 +9,7 @@ import { drawNodes_arrows, getForcedLayout } from "./draw";
 
 
 // ---------------------------
-const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
+const RealtimeView = ({ setBlockNumber, addressUrlPrefix, graphData }) => {
 
     const context = useAppContext();
     const dispatch = useAppDispatch();
@@ -21,6 +21,7 @@ const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
     const vc = vcRef.current; 
     vc.context = context;
     vc.addressUrlPrefix = addressUrlPrefix;
+    vc.graphData = graphData;
 
     
     useEffect(() => {
@@ -38,11 +39,6 @@ const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
             app.stop();
         };
     }, []);
-
-
-    useChange(context, (prev, current) => {
-        // console.log('context updated', current);
-    });
 
 
     const mainLoop = (vc: ViewContext) => {

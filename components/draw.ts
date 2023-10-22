@@ -56,9 +56,16 @@ export function getForcedLayout(vc: ViewContext) {
 
     // prep nodes / links 
 
+    const transfers = vc.graphData.map(transfer => ({
+        from: transfer.from,
+        to: transfer.to
+    }));
+
+    let nodes = Array.from(new Set(transfers));
+
     // force layout
     const block = vc.block;
-    const nodes = block.addresses.map(address => ({
+    nodes = block.addresses.map(address => ({
         address,
     }));
     // console.log('nodes', nodes);
@@ -69,6 +76,8 @@ export function getForcedLayout(vc: ViewContext) {
         links: block.links,
         selectedNode: null,
     }
+
+    
 
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(block.links) // This force provides links between nodes

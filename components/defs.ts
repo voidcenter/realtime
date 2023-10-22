@@ -36,6 +36,8 @@ export interface ViewContext {
     timeAlpha: number;
     addressUrlPrefix?: string;
 
+    graphData?: any;
+
 }
 
 
