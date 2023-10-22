@@ -5,11 +5,11 @@ import { setPixiApp, setupResizeHandler } from "./system";
 import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
 import * as moment from 'moment-timezone';
 import { ContextChange } from "@/context/defs";
-import { drawNodes, getForcedLayout } from "./helpers";
+import { drawNodes, drawNodes_arrows, getForcedLayout } from "./helpers";
 
 
 // ---------------------------
-const RealtimeView = ({  }) => {
+const RealtimeView = ({ setBlockNumber }) => {
 
     const context = useAppContext();
     const dispatch = useAppDispatch();
@@ -56,7 +56,7 @@ const RealtimeView = ({  }) => {
             vc.startTs = now;
             vc.duration = MAX_ANIMATION_DURATION;            
             vc.block = thisContext.blocks[0];  // remove first 
-
+            setBlockNumber(vc.block.block_number);
 
             dispatch({type: ContextChange.POP_FIRST_BLOCK });
 
@@ -64,15 +64,23 @@ const RealtimeView = ({  }) => {
 
             // console.log(JSON.stringify(thisContext));
 
-
-            // get force layout
-
             getForcedLayout(vc);
-            drawNodes(vc);
 
-            // start ticker 
+            vc.timeAlpha = 0;
+            // drawNodes(vc);
+            drawNodes_arrows(vc);
+        } else {
+
+            const nowMs = moment().valueOf();
+
+            // animating 
+            vc.timeAlpha = (nowMs - vc.startTs * 1000) / (vc.duration * 1000);
+            vc.timeAlpha = Math.min(1, vc.timeAlpha);
+            // console.log('time is ', vc.timeAlpha, now, vc.startTs, vc.duration);
+
+            drawNodes_arrows(vc);
+
         }
-
     }
 
 

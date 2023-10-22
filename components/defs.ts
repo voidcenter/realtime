@@ -9,7 +9,7 @@ export const VIEW_ASPECT_RATIO = 9 / 16;
 // in seoncds
 // if there are too few blocks, leave the view empty, in a waiting animation 
 // if there are too many blocks, ignore some blocks 
-export const MAX_ANIMATION_DURATION = 5;
+export const MAX_ANIMATION_DURATION = 1;
 export const MIN_ANIMATION_DURATION = 2;
 
 
@@ -30,5 +30,8 @@ export interface ViewContext {
     block?: ParsedBlock;
 
     vg: ViewGraph;
+
+    timeAlpha: number;
+
 }
 
