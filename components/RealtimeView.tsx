@@ -5,11 +5,11 @@ import { setPixiApp, setupResizeHandler } from "./system";
 import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
 import moment from 'moment-timezone';
 import { ContextChange } from "@/context/defs";
-import { drawNodes, drawNodes_arrows, getForcedLayout } from "./helpers";
+import { drawNodes_arrows, getForcedLayout } from "./draw";
 
 
 // ---------------------------
-const RealtimeView = ({ setBlockNumber }) => {
+const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
 
     const context = useAppContext();
     const dispatch = useAppDispatch();
@@ -20,6 +20,7 @@ const RealtimeView = ({ setBlockNumber }) => {
     const vcRef = useRef({} as ViewContext);
     const vc = vcRef.current; 
     vc.context = context;
+    vc.addressUrlPrefix = addressUrlPrefix;
 
     
     useEffect(() => {

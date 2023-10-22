@@ -11,12 +11,12 @@ export function AppContextProvider({ children }) {
 
     // debog
     const ic = JSON.parse(demoData);
-    console.log(ic);
+    // console.log(ic);
 
     const [context, dispatch] = useReducer(
         contextReducer,
-        // initialContext
-        ic
+        initialContext
+        // ic
     );
   
     return (
@@ -47,13 +47,13 @@ function contextReducer(appContext, action) {
 
 function appendBlock(context: Context, action: ContextDelta): Context {
    
-    console.log('[Context] append block', action.newBlock);
+    // console.log('[Context] append block', action.newBlock);
 
     const lastBlock = context.blocks.length > 0 ? 
         context.blocks[context.blocks.length - 1].block_number : 
         -1;
     if (action.newBlock.block_number <= lastBlock) {
-        console.log('duplicated block Number! last block = ', lastBlock, 'new block = ', action.newBlock);
+        // console.log('duplicated block Number! last block = ', lastBlock, 'new block = ', action.newBlock);
         return context;
     }
 
