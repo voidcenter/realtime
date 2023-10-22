@@ -20,8 +20,15 @@ function getTickFunction(vc: ViewContext): () => void {
         const xArr = vc.vg.nodes.map(c => c.x);
         const yArr = vc.vg.nodes.map(c => c.y);
         
-        const xSpan = Math.max(...xArr) - Math.min(...xArr);
-        const ySpan = Math.max(...yArr) - Math.min(...yArr);
+        const minX = Math.min(...xArr);
+        const maxX = Math.max(...xArr);
+        const minY = Math.min(...yArr);
+        const maxY = Math.max(...yArr);
+
+        const xSpan = maxX - minX;
+        const ySpan = maxY - minY;
+        const xCenter = (minX + maxX) / 2;
+        const yCenter = (minY + maxY) / 2;
 
         const targetSpan = 0.8;
         const xMul = width * targetSpan / xSpan;
@@ -31,8 +38,8 @@ function getTickFunction(vc: ViewContext): () => void {
             // node.x = Math.max(SCREEN_NODE_SIZE, Math.min(width - SCREEN_NODE_SIZE, node.x)); 
             // node.y = node.y / width * height;
             // node.y = Math.max(SCREEN_NODE_SIZE, Math.min(height - SCREEN_NODE_SIZE, node.y)); 
-            node.x = ox + (node.x - ox) * xMul;
-            node.y = oy + (node.y - oy) * yMul;
+            node.x = ox + (node.x - xCenter) * xMul;
+            node.y = oy + (node.y - yCenter) * yMul;
         });
 
         // console.log('contrain nodes');

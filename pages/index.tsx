@@ -123,16 +123,14 @@ export default function Home() {
       {
         chainSupported && (
             <div className={styles.viewContainer}>
-            {blockNumber > 0 && (
               <div>
                 <div className={styles.chainName}>{`${chainName} ${".".repeat(loadingDots)}`}</div>
-                <div className={styles.blockNumber}>
+                {blockNumber > 0 && (<div className={styles.blockNumber}>
                   <a href={blockUrl} target="_blank" rel="noopener noreferrer">
                     {`BLK: ${blockNumber}`}
                   </a>
-                </div>
+                </div>)}
               </div>
-            )}
             <RealtimeView setBlockNumber={setBlockNumber} addressUrlPrefix={addressUrlPrefix}/>
           </div>  
         )

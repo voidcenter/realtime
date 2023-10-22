@@ -4,7 +4,7 @@ import { Application } from "pixi.js";
 
 
 
-export const VIEW_ASPECT_RATIO = 9 / 16;
+export const VIEW_ASPECT_RATIO = 7 / 16;
 export const SCREEN_NODE_SIZE = 12;
 
 // in seoncds
@@ -37,4 +37,5 @@ export interface ViewContext {
     addressUrlPrefix?: string;
 
 }
+
 

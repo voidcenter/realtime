@@ -17,7 +17,7 @@ const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
     // console.log('context', context);
 
 
-    const vcRef = useRef({} as ViewContext);
+    const vcRef = useRef({ } as ViewContext);
     const vc = vcRef.current; 
     vc.context = context;
     vc.addressUrlPrefix = addressUrlPrefix;
@@ -54,6 +54,12 @@ const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
         const thisContext = vc.context;
         if ((!vc.startTs ||  now > vc.startTs + vc.duration) && thisContext.blocks.length > 0) {
             // new animation 
+
+            if (vc.block && thisContext.blocks[0].block_number <= vc.block.block_number) {
+                dispatch({type: ContextChange.POP_FIRST_BLOCK });
+                return;
+            }
+
             vc.startTs = now;
             vc.duration = MAX_ANIMATION_DURATION;            
             vc.block = thisContext.blocks[0];  // remove first 
@@ -63,7 +69,7 @@ const RealtimeView = ({ setBlockNumber, addressUrlPrefix }) => {
 
             console.log('animate', vc.block.block_number, vc.block, thisContext);
 
-            // console.log(JSON.stringify(thisContext));
+            console.log(JSON.stringify(thisContext));
 
             getForcedLayout(vc);
 
