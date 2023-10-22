@@ -10,7 +10,7 @@ import { TRANSFER_TOPIC } from '@/context/helpers';
 import { ContextChange, RawBlock, RawEvent } from '@/context/defs';
 const RealtimeView = dynamic(() => import("../components/RealtimeView"), { ssr: false });
 
-
+import { gql, useQuery } from '@apollo/client';
 
 
 
@@ -106,7 +106,27 @@ export default function Home() {
 
     const addressUrlPrefix = chainSupported ? addreddUrlPrefixMap[chainId] : '';
     
+
     
+    const GET_DATA = gql`
+      {
+        transfers(orderBy: blockNumber, orderDirection: desc) {
+          blockNumber
+          blockTimestamp
+          from
+          to
+          value
+          transactionHash
+        }
+      }
+    `;
+
+
+    const { loading, error, data } = useQuery(GET_DATA, {
+      variables: { language: 'english' },
+    });
+
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -121,7 +141,7 @@ export default function Home() {
 
 
       {
-        chainSupported && (
+        !loading && chainSupported && (
             <div className={styles.viewContainer}>
               <div>
                 <div className={styles.chainName}>{`${chainName} ${".".repeat(loadingDots)}`}</div>
@@ -131,7 +151,7 @@ export default function Home() {
                   </a>
                 </div>)}
               </div>
-            <RealtimeView setBlockNumber={setBlockNumber} addressUrlPrefix={addressUrlPrefix}/>
+            <RealtimeView setBlockNumber={setBlockNumber} addressUrlPrefix={addressUrlPrefix} graphData={data.data.transfers}/>
           </div>  
         )
       }
