@@ -139,7 +139,6 @@ export function drawNodes_arrows(vc: ViewContext) {
             .endFill();
         gfx.zIndex = 3;
         gfx.eventMode = 'static';
-        gfx.buttonMode = true;
         gfx.hitArea = new Circle(0, 0, SCREEN_NODE_SIZE);
 
         gfx.position = new Point(node.x, node.y);

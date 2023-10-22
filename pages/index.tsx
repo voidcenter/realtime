@@ -81,7 +81,7 @@ export default function Home() {
 
 
 
-    const chainId = window.ethereum.networkVersion;
+    const chainId = (window as any).ethereum.networkVersion;
     const chainNameMap = {
         137: "Polygon Mainnet",
         1: "Ethereum Mainnet",

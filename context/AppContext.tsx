@@ -15,8 +15,8 @@ export function AppContextProvider({ children }) {
 
     const [context, dispatch] = useReducer(
         contextReducer,
-        // initialContext
-        ic
+        initialContext
+        // ic
     );
   
     return (
