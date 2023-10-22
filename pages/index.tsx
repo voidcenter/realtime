@@ -1,30 +1,80 @@
 import Image from 'next/image'
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import dynamic from "next/dynamic";
+import styles from './index.module.css';
 
 import { ethers, utils } from "ethers";
+import { useAppContext, useAppDispatch } from '@/context/AppContext';
+import { TRANSFER_TOPIC } from '@/context/helpers';
+import { ContextChange, RawBlock, RawEvent } from '@/context/defs';
+const RealtimeView = dynamic(() => import("../components/RealtimeView"), { ssr: false });
+
+
+
 
 
 export default function Home() {
 
-    console.log(ethers);
-    console.log(window);
+    const context = useAppContext();
+    const dispatch = useAppDispatch();
+
+
+    // console.log(ethers);
+    // console.log(window);
 
     // this the metamask net
     const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-    console.log(provider);
+    // const provider = new ethers.providers.AlchemyProvider('matic', 'Ce4JsDJknM1Vi6LcVGBMebL21qNiVYkK');
+    // console.log(provider);
 
     const filter = {
         topics: [
-            utils.id("Transfer(address,address,uint256)"),
+            TRANSFER_TOPIC
         ]
     };
 
-    provider.on(filter, async (e: any) => {
-        console.log(e);
+    let currentBlock = -1;
+    let eventsBuffer: RawEvent[] = [];
+
+    provider.on(filter, async (e: RawEvent) => {
+
+        if (e.blockNumber > currentBlock) {
+            if (currentBlock > 0) {
+                console.log('flush logs', currentBlock);
+                // flush to context
+                const newBlock: RawBlock = {
+                    block_number: currentBlock,
+                    events: eventsBuffer,
+                };
+
+                // console.log(JSON.stringify(newContext));
+                await dispatch({type: ContextChange.APPEND_BLOCK, newBlock });
+            }
+            eventsBuffer = [];
+            currentBlock = e.blockNumber;
+        }
+        eventsBuffer.push(e);
+        // console.log(e);
     });
 
 
+    const [blockNumber, setBlockNumber] = useState(-1);
+    const [loadingDots, setLoadingDots] = useState(0);
+    const loadingDotRef = useRef(null);
 
+    useEffect(() => {
+        // Set up an interval to update the ticker value every second
+        const interval = setInterval(() => {
+            loadingDotRef.current = (loadingDotRef.current != null) ? (loadingDotRef.current + 1) % 4 : 0;
+            setLoadingDots(loadingDotRef.current);
+        }, 1000 / 4);
+    
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
+
+
+    console.log('loading dots', loadingDots);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -51,6 +101,13 @@ export default function Home() {
             />
           </a>
         </div>
+      </div>
+
+      <div className={styles.viewContainer}>
+        {blockNumber > 0 && (
+          <div className={styles.blockNumber}>{`BLK: ${blockNumber} ${".".repeat(loadingDots)}`}</div>
+        )}
+        <RealtimeView setBlockNumber={setBlockNumber}/>
       </div>
 
       <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
