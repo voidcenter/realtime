@@ -3,7 +3,7 @@ import { useAppContext, useAppDispatch } from "@/context/AppContext";
 import { useChange } from "./useChange";
 import { setPixiApp, setupResizeHandler } from "./system";
 import { MAX_ANIMATION_DURATION, ViewContext } from "./defs";
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { ContextChange } from "@/context/defs";
 import { drawNodes, drawNodes_arrows, getForcedLayout } from "./helpers";
 

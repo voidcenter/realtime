@@ -6,10 +6,6 @@ import { Link } from "@/context/defs";
 const SCREEN_NODE_SIZE = 12;
 
 
-// 找最大的transfers 。。。 max 50 nodes?   筛选规则
-// 往两边铺开
-// 显示arrow
-
 
 
 function getTickFunction(vc: ViewContext): () => void {
@@ -95,7 +91,7 @@ function clearView(vc: ViewContext) {
         const cont = vc.app.stage.children[0];
 
         while (cont.children[0]) {  
-            const nod = cont.children[0];
+            const nod = cont.children[0] as any;
             cont.removeChild(nod);
             nod.destroy();
         }
@@ -181,7 +177,7 @@ export function curvedArrow(xyFrom, xyTo, color, width, originalWidth, outbound,
     // curve right for outbound and left for inbound
     const norm = getNorm(xyFrom.x, xyFrom.y, xyTo.x, xyTo.y);
     if (norm === 0) {
-        return getDefaultArrow(xyFrom, xyTo); // if length is 0 - can't render arrows
+        return null;
     }
 
     // timeAlpha = 0.05;
